@@ -1,5 +1,5 @@
 <template>
-  <div class="container mx-auto p-4">
+  <div class="container mx-auto p-4 w-3/5">
     <div class="flex justify-between items-center mb-4">
       <button @click="prevDays" class="text-gray-500 hover:text-black transition-transform transform hover:scale-110">
         <i class="fas fa-chevron-left text-2xl"></i>

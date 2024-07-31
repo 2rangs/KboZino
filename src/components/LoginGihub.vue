@@ -45,30 +45,30 @@ const signOut = async () => {
   }
 };
 
-const checkUser = async () => {
-  const session = supabase.auth.session();
-  user.value = session?.user ?? null;
-};
+// const checkUser = async () => {
+//   const session = supabase.auth.session();
+//   user.value = session?.user ?? null;
+// };
 
 onMounted(async () => {
-  const session = localStorage.getItem('supabase.auth.token');
-  if (session) {
-    const parsedSession = JSON.parse(session);
-    supabase.auth.setSession(parsedSession.access_token);
-    user.value = parsedSession.user;
-  } else {
-    checkUser();
-  }
-
-  supabase.auth.onAuthStateChange((event, session) => {
-    if (session) {
-      localStorage.setItem('supabase.auth.token', JSON.stringify(session));
-      user.value = session.user;
-    } else {
-      localStorage.removeItem('supabase.auth.token');
-      user.value = null;
-    }
-  });
+  // const session = localStorage.getItem('supabase.auth.token');
+  // if (session) {
+  //   const parsedSession = JSON.parse(session);
+  //   supabase.auth.setSession(parsedSession.access_token);
+  //   user.value = parsedSession.user;
+  // } else {
+  //
+  // }
+  // checkUser();
+  // supabase.auth.onAuthStateChange((event, session) => {
+  //   if (session) {
+  //     localStorage.setItem('supabase.auth.token', JSON.stringify(session));
+  //     user.value = session.user;
+  //   } else {
+  //     localStorage.removeItem('supabase.auth.token');
+  //     user.value = null;
+  //   }
+  // });
 });
 </script>
 
