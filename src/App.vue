@@ -18,7 +18,7 @@
             <span class="font-bold text-xl text-black">{{ game.awayTeam }}</span>
           </div>
         </div>
-        <div v-if="game.statusCode === 'RESULT'" class="flex items-center space-x-8 mb-4">
+        <div v-if="game.statusCode === 'RESULT' || game.statusCode === 'STARTED'" class="flex items-center space-x-8 mb-4">
           <div class="flex flex-col items-center space-y-2">
             <img :src="`src/assets/logos/${game.homeTeamCode}.png`" alt="Home Team Emblem" class="h-16 w-16 object-contain" />
             <span class="font-bold text-xl text-black">{{ game.homeTeam }}</span>
@@ -40,8 +40,8 @@
         </div>
       </div>
     </div>
-    <div v-else>
-      <span class="text-2xl">
+    <div v-else class="text-center">
+      <span class="block text-2xl p-5 font-bold">
         오늘은 경기가 없습니다.
       </span>
     </div>
@@ -49,9 +49,10 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
+import {ref, onMounted, watch} from 'vue';
 import axios from 'axios';
 import DatePicker from "./components/DatePicker.vue";
+import {useDateStore} from "./stores/dateStore.ts";
 
 const selectDate = ref()
 interface Game {
@@ -67,6 +68,8 @@ interface Game {
   statusCode: string;
 }
 
+
+const dateStore = useDateStore()
 const games = ref<Game[]>([]);
 const loading = ref(true);
 const date = new Date()
@@ -115,6 +118,11 @@ const fetchGames = async () => {
     loading.value = false;
   }
 };
+
+watch(dateStore,(nv) => {
+  selectedDate.value = nv.getDate()
+  fetchGames()
+})
 
 onMounted(async () => {
   await fetchGames()

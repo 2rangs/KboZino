@@ -42,8 +42,11 @@
 <script setup lang="ts">
 import { ref, computed, watch } from 'vue';
 import { format, startOfWeek, addDays, subDays, isToday, isSameMonth, isSameDay } from 'date-fns'
+import {useDateStore} from "../stores/dateStore.ts";
 
 
+
+const dateStore = useDateStore()
 const selectedDate = ref(new Date());
 const startDate = ref(subDays(selectedDate.value, 3));
 const transitionClass = ref('');
@@ -114,6 +117,10 @@ const onDateChange = (event: Event) => {
   const target = event.target as HTMLInputElement;
   selectedDateString.value = target.value;
 };
+
+watch(selectedDateString,(nv) => {
+  dateStore.setDate(nv)
+})
 </script>
 
 <style scoped>
