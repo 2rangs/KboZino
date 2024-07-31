@@ -10,6 +10,11 @@ export default defineConfig({
         target: 'https://api-gw.sports.naver.com',
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/api/, '')
+      },
+      '/image': {
+        target: 'https://sports-phinf.pstatic.net',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/image/, '')
       }
     }
   }
