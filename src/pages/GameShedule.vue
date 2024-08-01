@@ -1,62 +1,65 @@
 <template>
-  <div class="container mx-auto p-4">
+  <div class="mx-auto p-6 bg-gray-900">
     <date-picker v-model="selectDate" />
-    <div v-if="games.length > 0" class="shadow-lg rounded-lg overflow-hidden w-full mx-auto mt-6 md:w-4/5 lg:w-3/5">
+    <div v-if="games.length > 0" class="shadow-lg rounded-lg overflow-hidden w-full mx-auto mt-6 md:w-4/5 lg:w-2/4 bg-gray-900">
       <div
           v-for="game in games"
           :key="game.id"
-          class="flex flex-col md:flex-row items-center justify-between p-4 md:p-6 border-b last:border-b-0 bg-white hover:bg-gray-100 transition duration-300 ease-in-out cursor-pointer"
+          class="flex flex-col md:flex-row items-center justify-between p-4 md:p-6 border-b last:border-b-0 bg-gray-800 hover:bg-gray-700 transition duration-300 ease-in-out cursor-pointer"
           @click="game.statusCode === 'RESULT' || game.statusCode === 'STARTED' ? navigateToRecord(game.id) : null"
       >
         <div class="flex flex-row items-center justify-between w-full">
-          <div class="flex flex-col items-center mx-2 md:mx-4">
-            <img
-                :src="`src/assets/logos/${game.homeTeamCode}.png`"
-                alt="Home Team Emblem"
-                class="h-12 w-12 md:h-16 md:w-16 object-contain"
-            />
-            <span class="font-bold text-sm md:text-lg text-black">{{ game.homeTeam }}</span>
-            <div v-if="game.statusCode === 'RESULT'" class="flex items-center space-x-1 mt-1">
-              <span v-if="game.winner === 'HOME'" class="badge bg-blue-50 text-blue-500 rounded p-1 text-xs md:text-sm">승</span>
-              <span v-else class="badge bg-red-100 text-red-500 rounded p-1 text-xs md:text-sm">패</span>
-              <span class="text-xs md:text-md p-1">{{ game.winner === 'HOME' ? game.winPitcherName : game.losePitcherName }}</span>
-            </div>
-          </div>
-          <span class="mx-2 md:mx-4 text-lg md:text-2xl font-bold text-gray-700">{{ game.homeTeamScore }}</span>
-          <div class="flex flex-col items-center text-center text-gray-700 mx-2 md:mx-4">
-            <span class="block text-gray-500 text-xs md:text-sm">{{ game.location }}</span>
-            <span class="text-md font-semibold">
-            {{ game.time.split('T')[1].split(':').slice(0, 2).join(':') }}
-          </span>
-            <span v-if="game.statusInfo === '경기취소'" class="text-xs md:text-sm">경기 취소</span>
-            <span v-if="game.statusCode === 'BEFORE' && game.statusInfo != '경기취소'" class="text-xs md:text-sm">경기 전</span>
-            <span v-if="game.statusCode === 'READY'" class="text-xs md:text-sm">경기 준비</span>
-            <span v-if="game.statusCode === 'RESULT'" class="text-xs md:text-sm">경기 종료</span>
-            <span v-if="game.statusCode === 'STARTED'" class="text-xs md:text-sm">경기 중</span>
-          </div>
-          <span class="mx-2 md:mx-4 text-lg md:text-2xl font-bold text-gray-700">{{ game.awayTeamScore }}</span>
+
           <div class="flex flex-col items-center mx-2 md:mx-4">
             <img
                 :src="`src/assets/logos/${game.awayTeamCode}.png`"
                 alt="Away Team Emblem"
                 class="h-12 w-12 md:h-16 md:w-16 object-contain"
             />
-            <span class="font-bold text-sm md:text-lg text-black">{{ game.awayTeam }}</span>
+            <span class="p-3 font-bold text-sm md:text-lg text-white">{{ game.awayTeam }}</span>
             <div v-if="game.statusCode === 'RESULT'" class="flex items-center space-x-1 mt-1">
-              <span v-if="game.winner === 'AWAY'" class="badge bg-blue-50 text-blue-500 rounded p-1 text-xs md:text-sm">승</span>
-              <span v-else class="badge bg-red-100 text-red-500 rounded p-1 text-xs md:text-sm">패</span>
-              <span class="text-xs md:text-md p-1">{{ game.winner === 'AWAY' ? game.winPitcherName : game.losePitcherName }}</span>
+              <span v-if="game.winner === 'AWAY'" class="badge bg-blue-900 text-blue-500 rounded p-1 text-xs md:text-sm">승</span>
+              <span v-else class="badge bg-red-900 text-red-500 rounded p-1 text-xs md:text-sm">패</span>
+              <span class="text-xs md:text-sm p-1 text-white">{{ game.winner === 'AWAY' ? game.winPitcherName : game.losePitcherName }}</span>
             </div>
           </div>
+          <span class="mx-2 md:mx-4 text-lg md:text-2xl font-bold text-gray-300">{{ game.awayTeamScore }}</span>
+          <div class="flex flex-col items-center text-center text-gray-300 mx-2 md:mx-4">
+            <span class="block text-gray-500 text-xs md:text-sm">{{ game.location }}</span>
+            <span class="text-md font-semibold text-gray-300">
+        {{ game.time.split('T')[1].split(':').slice(0, 2).join(':') }}
+      </span>
+            <span v-if="game.statusInfo === '경기취소'" class="text-xs md:text-sm text-gray-400">경기 취소</span>
+            <span v-if="game.statusCode === 'BEFORE' && game.statusInfo != '경기취소'" class="text-xs md:text-sm text-gray-400">경기 전</span>
+            <span v-if="game.statusCode === 'READY'" class="text-xs md:text-sm text-gray-400">경기 준비</span>
+            <span v-if="game.statusCode === 'RESULT'" class="text-xs md:text-sm text-gray-400">경기 종료</span>
+            <span v-if="game.statusCode === 'STARTED'" class="text-xs md:text-sm text-gray-400">경기 중</span>
+          </div>
+
+          <span class="mx-2 md:mx-4 text-lg md:text-2xl font-bold text-gray-300">{{ game.homeTeamScore }}</span>
+          <div class="flex flex-col items-center mx-2 md:mx-4">
+            <img
+                :src="`src/assets/logos/${game.homeTeamCode}.png`"
+                alt="Home Team Emblem"
+                class="h-12 w-12 md:h-16 md:w-16 object-contain"
+            />
+            <span class="p-3 font-bold text-sm md:text-lg text-white">{{ game.homeTeam }}</span>
+            <div v-if="game.statusCode === 'RESULT'" class="flex items-center space-x-1 mt-1">
+              <span v-if="game.winner === 'HOME'" class="badge bg-blue-900 text-blue-500 rounded p-1 text-xs md:text-sm">승</span>
+              <span v-else class="badge bg-red-900 text-red-500 rounded p-1 text-xs md:text-sm">패</span>
+              <span class="text-xs md:text-sm p-1 text-white">{{ game.winner === 'HOME' ? game.winPitcherName : game.losePitcherName }}</span>
+            </div>
+          </div>
+
         </div>
       </div>
     </div>
 
     <div v-else class="text-center">
       <img class="p-10 w-52 block m-auto" src="/src/assets/images/nodata.svg" />
-      <span class="block text-xl md:text-2xl p-5 font-bold">
-      해당 날짜는 경기가 없습니다.
-    </span>
+      <span class="block text-xl md:text-2xl p-15 font-bold text-white">
+        해당 날짜는 경기가 없습니다.
+      </span>
     </div>
   </div>
 </template>
@@ -67,6 +70,7 @@ import DatePicker from '../components/DatePicker.vue'
 import { useDateStore } from '../stores/dateStore.ts'
 import router from '../router'
 import LoginGihub from "../components/LoginGihub.vue";
+import {ApiService} from "../api";
 
 interface Game {
   id: string

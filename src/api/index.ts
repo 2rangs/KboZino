@@ -29,9 +29,19 @@ class ApiWrapper {
     }
 }
 const api = new ApiWrapper('/api')
+const player = new ApiWrapper('/player')
 export const ApiService = {
     async  getGameRecord  (gameID : string)  {
         // https://api-gw.sports.naver.com/schedule/games/20240730HHKT02024/record
        return  api.axiosCaller('GET',`/schedule/games/${gameID}/record`)
+    },
+    async getPlayerRanking (param : any) {
+        param = {
+            category: 'kbo',
+            year: 2024,
+            type: 'pitcher',
+            playerOrder: 'era',
+        }
+    return player.axiosCaller('GET','/record/ajaxHtmlPlayerRecord.nhn', param)
     }
 }

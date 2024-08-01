@@ -11,8 +11,13 @@ export default defineConfig({
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/api/, '')
       },
+      '/player': {
+        target: 'https://sports.news.naver.com/kbaseball/',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/player/, '')
+      },
       '/image': {
-        target: 'https://sports-phinf.pstatic.net',
+        target: 'https://lgcxydabfbch3774324.cdn.ntruss.com/KBO_IMAGE/person/middle/2024/',
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/image/, '')
       }

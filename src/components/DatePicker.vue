@@ -1,14 +1,11 @@
 <template>
-  <div class="container mx-auto p-4 w-3/5">
+  <div class="container mx-auto p-2 md:w-4/5 lg:w-2/4">
     <div class="flex justify-between items-center mb-4">
       <button @click="prevDays" class="text-gray-500 hover:text-black transition-transform transform hover:scale-110">
         <i class="fas fa-chevron-left text-2xl"></i>
       </button>
-      <div class="flex items-center space-x-4 mx-auto">
-        <div class="text-lg font-bold text-2xl">
-          {{ year }}.{{ month }}
-        </div>
-        <input type="date" v-model="selectedDateString" @change="onDateChange" class="bg-gray-200 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-300 transition-colors">
+      <div class="flex items-center mx-auto">
+        <input type="date" v-model="selectedDateString" @change="onDateChange" class="bg-gray-700 p-3 text-gray-50 rounded-lg hover:bg-gray-600 transition-colors">
       </div>
       <button @click="nextDays" class="text-gray-500 hover:text-black transition-transform transform hover:scale-110">
         <i class="fas fa-chevron-right text-2xl"></i>
@@ -16,7 +13,7 @@
     </div>
     <div class="flex justify-between mt-4 transition-all duration-500" :class="transitionClass">
       <div v-for="day in visibleDays" :key="day.date" class="text-center flex-1">
-        <div class="py-1 text-lg text-gray-500">
+        <div class="py-1 text-lg text-gray-50">
           {{ day.weekday }}
         </div>
         <div
@@ -26,7 +23,7 @@
             'transition-colors',
             'duration-300',
             day.isCurrentMonth ? 'text-black' : 'text-gray-400',
-            day.isToday ? 'text-black' : 'text-black',
+            day.isToday ? 'text-black' : 'text-gray-50',
             isSelected(day.date) ? 'bg-blue-500 text-white rounded-full' : ''
           ]"
             @click="selectDate(day.date)"
