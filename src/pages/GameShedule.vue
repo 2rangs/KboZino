@@ -160,6 +160,7 @@ watch(
 )
 
 onMounted(async () => {
+  selectedDate.value = formatDate(date)
   await fetchGames()
 })
 </script>

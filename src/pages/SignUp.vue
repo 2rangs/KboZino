@@ -1,7 +1,7 @@
 <template>
   <div class="min-h-screen flex items-center justify-center bg-gray-900 text-white">
     <div class="w-full max-w-md p-8 space-y-8 bg-gray-800 rounded-lg shadow-md">
-      <h2 class="text-center text-3xl font-extrabold">Create your account</h2>
+      <h2 class="text-center text-3xl font-extrabold">Sign up for an account</h2>
       <form @submit.prevent="signUp">
         <div class="rounded-md shadow-sm -space-y-px">
           <div>
@@ -23,7 +23,7 @@
                 id="password"
                 name="password"
                 type="password"
-                autocomplete="current-password"
+                autocomplete="new-password"
                 required
                 class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
                 placeholder="Password"
@@ -42,31 +42,33 @@
         </div>
       </form>
       <div class="text-sm text-center">
-        <router-link to="/sign" class="font-medium text-indigo-600 hover:text-indigo-500">Already have an account? Sign in</router-link>
+        <router-link to="/signin" class="font-medium text-indigo-600 hover:text-indigo-500">Already have an account? Sign in</router-link>
       </div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
-import { supabase } from '../util/supabase.ts'
+import { ref } from 'vue';
+import { supabase } from '../util/supabase.ts';
+import { useRouter } from 'vue-router';
 
-const email = ref('')
-const password = ref('')
+const email = ref('');
+const password = ref('');
+const router = useRouter();
 
 const signUp = async () => {
   const { error } = await supabase.auth.signUp({
     email: email.value,
     password: password.value,
-  })
+  });
   if (error) {
-    alert('Error signing up: ' + error.message)
+    alert('Error signing up: ' + error.message);
   } else {
-    alert('Successfully signed up!')
-    // Redirect to sign-in page or perform other actions here
+    alert('Successfully signed up!');
+    router.push('/signin');
   }
-}
+};
 </script>
 
 <style scoped>
