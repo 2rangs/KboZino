@@ -166,7 +166,7 @@ const addNewGames = async (games : any) => {
     if (error) {
       continue
     }
-    if (data.length === 0) {
+    if (data.length === 0 && game.statusCode === 'BEFORE' && game.statusInfo !== '경기취소') {
       const { error: insertError } = await supabase
           .from('betting')
           .insert([
