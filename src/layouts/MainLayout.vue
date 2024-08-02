@@ -5,12 +5,12 @@
       <div class="hidden md:flex space-x-4">
         <router-link to="/" class="hover:text-gray-400">Home</router-link>
         <div v-if="user" class="relative">
-          <button @click="toggleUserMenu" class="hover:text-gray-400">{{ user.email.split('@')[0] }}</button>
+          <button @click="toggleUserMenu" class="hover:text-gray-400">{{ userProfile.full_name || user.email.split('@')[0] }}</button>
           <div v-if="isUserMenuOpen" class="absolute right-0 mt-2 w-48 bg-gray-700 rounded-md shadow-lg py-1 z-20">
             <a @click="signOut" class="block px-4 py-2 text-sm text-white hover:bg-gray-600 cursor-pointer">Logout</a>
           </div>
         </div>
-        <router-link v-else to="/sign" class="hover:text-gray-400">Sign in</router-link>
+        <router-link v-else to="/sign" class="hover:text-gray-400">로그인</router-link>
       </div>
       <div class="md:hidden">
         <button @click="toggleMenu" class="focus:outline-none">
@@ -29,9 +29,9 @@
             </svg>
           </button>
           <router-link @click="toggleMenu" to="/" class="block px-4 py-2 hover:bg-gray-700">Home</router-link>
-          <router-link v-if="!user" @click="toggleMenu" to="/sign" class="block px-4 py-2 hover:bg-gray-700">Sign in</router-link>
+          <router-link v-if="!user" @click="toggleMenu" to="/sign" class="block px-4 py-2 hover:bg-gray-700">로그인</router-link>
           <div v-if="user">
-            <button @click="toggleUserMenu" class="block px-4 py-2 hover:bg-gray-700 w-full text-left">{{ user.email.split('@')[0] }}</button>
+            <button @click="toggleUserMenu" class="block px-4 py-2 hover:bg-gray-700 w-full text-left">{{ userProfile.full_name || user.email.split('@')[0] }}</button>
             <a @click="signOut" class="block px-4 py-2 text-sm text-white hover:bg-gray-600 cursor-pointer">Logout</a>
           </div>
         </div>
@@ -47,7 +47,8 @@ import { supabase } from '../util/supabase.ts';
 
 const isMenuOpen = ref(false);
 const isUserMenuOpen = ref(false);
-const user = ref()
+const user = ref();
+const userProfile = ref({ full_name: '' });
 
 const toggleMenu = () => {
   isMenuOpen.value = !isMenuOpen.value;
@@ -60,6 +61,14 @@ const toggleUserMenu = () => {
 const getUser = async () => {
   const { data: { user: supabaseUser } } = await supabase.auth.getUser();
   user.value = supabaseUser;
+  if (supabaseUser) {
+    const { data: profile } = await supabase
+        .from('profiles')
+        .select('full_name')
+        .eq('email', supabaseUser.email)
+        .single();
+    userProfile.value = profile || { full_name: '' };
+  }
 };
 
 const signOut = async () => {
@@ -68,17 +77,19 @@ const signOut = async () => {
     alert('Error signing out: ' + error.message);
   } else {
     user.value = null;
+    userProfile.value = { full_name: '' };
     isUserMenuOpen.value = false;
   }
 };
 
 onMounted(() => {
-  getUser();
-  supabase.auth.onAuthStateChange((event : any, session) => {
+  supabase.auth.onAuthStateChange((event: any, session) => {
     if (session?.user) {
       user.value = session.user;
+      getUser();
     } else {
       user.value = null;
+      userProfile.value = { full_name: '' };
     }
   });
 });

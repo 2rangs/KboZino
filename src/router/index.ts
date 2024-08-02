@@ -2,7 +2,8 @@ import { createWebHistory, createRouter } from "vue-router";
 import GameShedule from "../pages/GameShedule.vue";
 import GameRecord from "../pages/GameRecord.vue";
 import SignIn from "../pages/SignIn.vue";
-import SignUp from "../pages/SignUp.vue";
+import RecoveryPassword from "../pages/RecoveryPassword.vue";
+import ResetPassword from "../pages/ResetPassword.vue";
 
 const routes = [
   {
@@ -21,9 +22,14 @@ const routes = [
     component: SignIn,
   },
   {
-    path: "/register",
-    name: "Register",
-    component: SignUp,
+    path: "/recovery",
+    name: "recovery",
+    component: RecoveryPassword,
+  },
+  {
+    path: "/reset",
+    name: "reset",
+    component: ResetPassword,
   },
 ];
 

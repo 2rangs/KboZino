@@ -22,8 +22,8 @@
             'cursor-pointer',
             'transition-colors',
             'duration-300',
-            day.isCurrentMonth ? 'text-black' : 'text-gray-400',
-            day.isToday ? 'text-black' : 'text-gray-50',
+            day.isCurrentMonth ? 'text-gray-400' : 'text-gray-400',
+            day.isToday ? 'text-gray-400' : 'text-gray-50',
             isSelected(day.date) ? 'bg-blue-500 text-white rounded-full' : ''
           ]"
             @click="selectDate(day.date)"

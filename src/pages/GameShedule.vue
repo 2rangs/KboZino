@@ -5,10 +5,10 @@
       <div
           v-for="game in games"
           :key="game.id"
-          class="flex flex-col md:flex-row items-center justify-between p-4 md:p-6 border-b last:border-b-0 bg-gray-800 hover:bg-gray-700 transition duration-300 ease-in-out cursor-pointer"
+          class="flex flex-col p-2 md:p-3 border-b last:border-b-0 bg-gray-800 hover:bg-gray-700 transition duration-300 ease-in-out cursor-pointer"
           @click="game.statusCode === 'RESULT' || game.statusCode === 'STARTED' ? navigateToRecord(game.id) : null"
       >
-        <div class="flex flex-row items-center justify-between w-full">
+        <div class="flex items-center justify-between w-full p-10">
 
           <div class="flex flex-col items-center mx-2 md:mx-4">
             <img
@@ -16,19 +16,21 @@
                 alt="Away Team Emblem"
                 class="h-12 w-12 md:h-16 md:w-16 object-contain"
             />
-            <span class="p-3 font-bold text-sm md:text-lg text-white">{{ game.awayTeam }}</span>
+            <span  v-if="game.statusCode !== 'RESULT'" class="p-3 font-bold text-sm md:text-lg text-white">{{ game.awayTeam }}</span>
             <div v-if="game.statusCode === 'RESULT'" class="flex items-center space-x-1 mt-1">
-              <span v-if="game.winner === 'AWAY'" class="badge bg-blue-900 text-blue-500 rounded p-1 text-xs md:text-sm">승</span>
-              <span v-else class="badge bg-red-900 text-red-500 rounded p-1 text-xs md:text-sm">패</span>
+              <span v-if="game.winner === 'AWAY'" class="badge bg-blue-900 text-blue-300 rounded p-1 text-xs md:text-sm">승</span>
+              <span v-else class="badge bg-red-900 text-red-300 rounded p-1 text-xs md:text-sm">패</span>
               <span class="text-xs md:text-sm p-1 text-white">{{ game.winner === 'AWAY' ? game.winPitcherName : game.losePitcherName }}</span>
             </div>
           </div>
+
           <span class="mx-2 md:mx-4 text-lg md:text-2xl font-bold text-gray-300">{{ game.awayTeamScore }}</span>
+
           <div class="flex flex-col items-center text-center text-gray-300 mx-2 md:mx-4">
             <span class="block text-gray-500 text-xs md:text-sm">{{ game.location }}</span>
             <span class="text-md font-semibold text-gray-300">
-        {{ game.time.split('T')[1].split(':').slice(0, 2).join(':') }}
-      </span>
+          {{ game.time.split('T')[1].split(':').slice(0, 2).join(':') }}
+        </span>
             <span v-if="game.statusInfo === '경기취소'" class="text-xs md:text-sm text-gray-400">경기 취소</span>
             <span v-if="game.statusCode === 'BEFORE' && game.statusInfo != '경기취소'" class="text-xs md:text-sm text-gray-400">경기 전</span>
             <span v-if="game.statusCode === 'READY'" class="text-xs md:text-sm text-gray-400">경기 준비</span>
@@ -37,23 +39,28 @@
           </div>
 
           <span class="mx-2 md:mx-4 text-lg md:text-2xl font-bold text-gray-300">{{ game.homeTeamScore }}</span>
+
           <div class="flex flex-col items-center mx-2 md:mx-4">
             <img
                 :src="`src/assets/logos/${game.homeTeamCode}.png`"
                 alt="Home Team Emblem"
                 class="h-12 w-12 md:h-16 md:w-16 object-contain"
             />
-            <span class="p-3 font-bold text-sm md:text-lg text-white">{{ game.homeTeam }}</span>
+            <span v-if="game.statusCode !== 'RESULT'" class="p-3 font-bold text-sm md:text-lg text-white">{{ game.homeTeam }}</span>
             <div v-if="game.statusCode === 'RESULT'" class="flex items-center space-x-1 mt-1">
-              <span v-if="game.winner === 'HOME'" class="badge bg-blue-900 text-blue-500 rounded p-1 text-xs md:text-sm">승</span>
-              <span v-else class="badge bg-red-900 text-red-500 rounded p-1 text-xs md:text-sm">패</span>
+              <span v-if="game.winner === 'HOME'" class="badge bg-blue-900 text-blue-300 rounded p-1 text-xs md:text-sm">승</span>
+              <span v-else class="badge bg-red-900 text-red-300 rounded p-1 text-xs md:text-sm">패</span>
               <span class="text-xs md:text-sm p-1 text-white">{{ game.winner === 'HOME' ? game.winPitcherName : game.losePitcherName }}</span>
             </div>
           </div>
+        </div>
 
+        <div v-if="game.statusCode === 'BEFORE' && game.statusInfo !== '경기취소'" class="mt-4 w-full text-center">
+<!--         <GameBetting :game-id="game.id" />-->
         </div>
       </div>
     </div>
+
 
     <div v-else class="text-center">
       <img class="p-10 w-52 block m-auto" src="/src/assets/images/nodata.svg" />
@@ -69,8 +76,8 @@ import axios from 'axios'
 import DatePicker from '../components/DatePicker.vue'
 import { useDateStore } from '../stores/dateStore.ts'
 import router from '../router'
-import LoginGihub from "../components/LoginGihub.vue";
-import {ApiService} from "../api";
+import GameBetting from "../components/GameBetting.vue";
+import {supabase} from "../util/supabase.ts";
 
 interface Game {
   id: string
@@ -136,6 +143,8 @@ const fetchGames = async (): Promise<void> => {
       statusInfo: game.statusInfo,
       winner: game.winner,
     }))
+    await  addNewGames(games.value)
+
     if (games.value.length > 5) {
       games.value.splice(0, 1)
     }
@@ -145,6 +154,36 @@ const fetchGames = async (): Promise<void> => {
     loading.value = false
   }
 }
+
+
+const addNewGames = async (games : any) => {
+  for (const game of games) {
+    const { data, error } = await supabase
+        .from('betting')
+        .select('game_id')
+        .eq('game_id', game.id)
+
+    if (error) {
+      continue
+    }
+    if (data.length === 0) {
+      const { error: insertError } = await supabase
+          .from('betting')
+          .insert([
+            {
+              game_id: game.id
+            }
+          ])
+
+      if (insertError) {
+        console.error('Error inserting data:', insertError)
+      } else {
+        console.log(`Game ${game.id} inserted successfully.`)
+      }
+    }
+  }
+}
+
 
 const navigateToRecord = (gameId: string): void => {
   router.push(`/record/${gameId}`)
@@ -161,7 +200,6 @@ watch(
 
 onMounted(async () => {
   selectedDate.value = formatDate(date)
-  await fetchGames()
 })
 </script>
 

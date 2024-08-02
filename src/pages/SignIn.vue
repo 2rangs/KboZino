@@ -1,11 +1,11 @@
 <template>
   <div class="min-h-screen flex items-center justify-center bg-gray-900 text-white">
     <div class="w-full max-w-md p-8 space-y-8 bg-gray-800 rounded-lg shadow-md">
-      <h2 class="text-center text-3xl font-extrabold">Sign in to your account</h2>
+      <h2 class="text-center text-3xl font-extrabold">KboZino</h2>
       <form @submit.prevent="signIn">
         <div class="rounded-md shadow-sm -space-y-px">
           <div>
-            <label for="email" class="sr-only">Email address</label>
+            <label for="email" class="sr-only">Email</label>
             <input
                 id="email"
                 name="email"
@@ -32,19 +32,9 @@
           </div>
         </div>
 
-        <div class="flex items-center justify-between mt-4">
-          <div class="flex items-center">
-            <input
-                id="remember-me"
-                name="remember-me"
-                type="checkbox"
-                class="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
-            />
-            <label for="remember-me" class="ml-2 block text-sm text-gray-500">Remember me</label>
-          </div>
-
-          <div class="text-sm">
-            <a href="#" class="font-medium text-indigo-600 hover:text-indigo-500">Forgot your password?</a>
+        <div class="flex float-right p-3">
+          <div class=" text-sm">
+            <a href="/recovery" class="font-medium text-indigo-400 hover:text-indigo-500">비밀번호를 잊으셨나요?</a>
           </div>
         </div>
 
@@ -53,7 +43,7 @@
               type="submit"
               class="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 mt-4"
           >
-            Sign in
+            로그인
           </button>
         </div>
       </form>
@@ -62,13 +52,20 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
 import { supabase } from '../util/supabase.ts';
 import { useRouter } from 'vue-router';
 
 const email = ref('');
 const password = ref('');
 const router = useRouter();
+
+onMounted(() => {
+  const savedEmail = localStorage.getItem('email');
+  if (savedEmail) {
+    email.value = savedEmail;
+  }
+});
 
 const signIn = async () => {
   const { error } = await supabase.auth.signInWithPassword({
@@ -78,7 +75,7 @@ const signIn = async () => {
   if (error) {
     alert('Error signing in: ' + error.message);
   } else {
-    alert('Successfully signed in!');
+    localStorage.setItem('email', email.value);
     router.push('/');
   }
 };

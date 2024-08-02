@@ -3,7 +3,7 @@
     <div class="w-full max-w-4xl bg-gray-800 p-6 rounded-lg shadow-2xl">
       <div class="text-center mb-6">
         <h1 class="text-3xl font-bold mb-4 text-white">{{ record.gameInfo.hName }} vs {{ record.gameInfo.aName }} {{ record.gameInfo.round }} 차전</h1>
-        <div class="flex flex-col-3 justify-between items-center text-white w-3/4 m-auto">
+        <div class="flex flex-col-3 justify-between items-center text-white w-4/5 m-auto">
           <div class="text-left flex flex-col items-center mb-4 md:mb-0">
             <img id="emblem" :src="`/src/assets/emblem/${record.gameInfo.aCode}.png`" class="w-20 h-20 object-contain"/>
             <div class="font-bold text-lg mt-2">{{ record.gameInfo.aFullName }}</div>
